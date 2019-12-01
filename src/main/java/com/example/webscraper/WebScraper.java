@@ -42,7 +42,9 @@ public class WebScraper {
         return document;
     }
 
-    public HashSet<Vereador> getParlamentares() {
+    public void getParlamentares() {
+        Database database = new Database();
+
         Document document = this.getLinkContent(PARLAMENTARES_LINK);
         Element parlamentaresTable = document.getElementsByTag("table").get(1);
         Elements rows = parlamentaresTable.getElementsByTag("tr");
@@ -71,15 +73,13 @@ public class WebScraper {
                 vereadores.add(vereador);
             }
         }
-
-        return vereadores;
+        database.insertListIntoVereadoresTable(vereadores);
     }
 
     public void getSessoesPlenarias() {
         Document document = this.getLinkContent(SESSOES_PLENARIAS_INDEX_LINK);
         Elements sessoesElement = document.getElementsByTag("option");
         List<String> datasSessoes = new ArrayList<>();
-        List<SessaoPlenaria> sessoesTotal = new ArrayList<>();
 
         Database database = new Database();
 
@@ -112,7 +112,6 @@ public class WebScraper {
                 SessaoPlenaria sessaoPlenaria = new SessaoPlenaria(nomeDaSessao, tipoDaSessao, abertura, encerramento, dataSessao, listaDePresenca);
 
                 database.insertSessaoPlenariaToDB(sessaoPlenaria);
-                sessoesTotal.add(sessaoPlenaria);
                 System.out.println("sessaoPlenaria adicionada na lista");
             }
         }
